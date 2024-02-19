@@ -21,5 +21,14 @@ describe('GET /api/topics', () => {
             expect(topic).toHaveProperty('description')
            })
         })
+    })
+    it('404 sends an appropriate status and error message when given a valid but non-existent endpoint ', () => {
+        return request(app)
+            .get('/api/nonexistent-endpoint')
+            .expect(404)
+            .then((response) => {
+                expect(response.status).toBe(404)
+                expect(response.body.msg).toBe("Endpoint not found")
+        })
     });
 })
