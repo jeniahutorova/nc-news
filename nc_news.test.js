@@ -76,21 +76,48 @@ describe(`GET /api`, () => {
             .get('/api/articles')
             .expect(200)
             .then((response) => {
-                const articles = response.body.articles;
-                articles.articles.forEach((article) => {
+                const {articles}= response.body.articles;
+                articles.forEach((article) => {
                     expect(article).toHaveProperty('comment_count')
                 })
             })
         });
-        // it('the articles should be sorted by date in descending order.', () => {
-        //     return request(app)
-        //     .get('/api/articles?sort_by=comment_count')
-        //     .expect(200)
-        //     .then((response) => {
-        //         const articles = response.body.articles;
-        //         console.log(articles)
-        //         articles.articles.forEach((article) => {
-        //             expect(article).toHaveProperty('comment_count')
-        //     })   
-        // });
+        it('the articles should be sorted by date in descending order.', () => {
+            return request(app)
+            .get('/api/articles')
+            .expect(200)
+            .then((response) => {
+                const {articles} = response.body.articles;
+                    articles.forEach((article) => {
+                    expect(article).toHaveProperty('comment_count')
+            })   
+        });
     })
+    it('the articles should be sorted by date in descending order.', () => {
+        return request(app)
+        .get('/api/articles?sort_by=created_at&order=desc')
+        .expect(200)
+        .then((response) => {
+            const {articles} = response.body.articles;
+            expect(articles).toBeSorted('created_at')
+        });
+    })
+    it('400: returns bad request if passed an invalid parameter for sorting', () => {
+        return request(app)
+        .get('/api/articles?sort_by=topic')
+        .expect(400)
+        .then((response) => {
+            const {msg} = response.body;
+            expect(msg).toBe('Bad Request')
+        })
+    })
+    it('should sort in a desc order by default', () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((response) => {
+            const {articles} = response.body.articles;
+            expect(articles).toBeSortedBy("created_at",{descending: true})
+        })
+    })
+})

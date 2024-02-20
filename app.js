@@ -18,7 +18,7 @@ app.use((err, request, response, next)=> {
 app.use((err, request, response, next) => {
   if(err.status = '22P02'){
     response.status(400).send({msg :'Bad Request'})
-  }else {
+  } else {
     response.status(500).send({msg :'Internal Server Error'})
     next(err)
   }
