@@ -70,7 +70,6 @@ describe(`GET /api`, () => {
               });
           });
     })
-    describe('GET /api/articles', () => {
         it('should get an articles array of article objects, each of which should have the following properties', () => {
             return request(app)
             .get('/api/articles')
@@ -118,6 +117,25 @@ describe(`GET /api`, () => {
         .then((response) => {
             const {articles} = response.body.articles;
             expect(articles).toBeSortedBy("created_at",{descending: true})
+        })
+    })
+describe('GET /api/articles/:article_id/comments', () => {
+    it('an article object, which should have the following properties', () => {
+        return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then((response) => {
+            const comments = response.body;
+            comments.forEach((comment) => {
+                console.log(comment)
+                expect(comment).toHaveProperty('comment_id')
+                expect(comment).toHaveProperty('votes')
+                expect(comment).toHaveProperty('created_at')
+                expect(comment).toHaveProperty('author')
+                expect(comment).toHaveProperty('body')
+                expect(comment).toHaveProperty('article_id')
+            })
+            expect(comments[0].comment_id).toBe(5)
         })
     })
 })
