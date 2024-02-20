@@ -1,4 +1,4 @@
-const {selectTopics, selectArticleById} = require("./model")
+const {selectTopics, selectArticleById, selectArticles, selectEndpoints} = require("./model")
 
 exports.getTopics = (req,res,next) => {
     selectTopics().then((topics) => {
@@ -15,3 +15,21 @@ exports.getArticleById = (req, res, next) => {
       next(err)
      })
   };
+
+  exports.getEndpoints = (req,res,next) => {
+    try {
+      const endpoints = selectEndpoints();
+      res.status(200).json(endpoints);
+    } catch (err){
+      next(err);
+    }
+  }
+
+  exports.getArticles = (req,res,next) => {
+    const {sort_by, order} = req.query
+    selectArticles(sort_by, order).then((articles) => {
+        res.status(200).send({articles})
+    }).catch((err) => {
+        next(err)
+    })
+  }
