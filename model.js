@@ -1,3 +1,4 @@
+const e = require('express');
 const db = require('./db/connection')
 const fs = require('fs')
 
@@ -45,8 +46,27 @@ exports.selectArticleById = (article_id) => {
   sqlString += `;`
 
   return db.query(sqlString).then((articles) => {
-    
     return { articles : articles.rows };
   });
   }
   
+  exports.selectComments = (article_id) => {
+    
+    const  sqlString = `SELECT 
+    comments.comment_id,
+    comments.votes,
+    comments.created_at,
+    comments.author,
+    comments.body,
+    comments.article_id
+    FROM articles
+    LEFT JOIN comments 
+    ON articles.article_id = comments.article_id
+    WHERE articles.article_id = $1
+    ORDER BY comments.created_at DESC`
+
+    return db.query(sqlString, [article_id])
+    .then((article) => {
+    return article.rows
+    })
+  }
