@@ -1,4 +1,4 @@
-const express = require('express');
+
 const db = require('./db/connection')
 const fs = require('fs')
 
@@ -21,6 +21,7 @@ exports.selectArticleById = (article_id) => {
     return db.query('SELECT * FROM articles WHERE article_id = $1;', [article_id])
       .then(({rows}) => {
         const article = rows[0];
+        console.log(article)
         if (!article) {
           return Promise.reject({status: 404, msg:'Not Found'});
         }
@@ -84,15 +85,20 @@ exports.selectArticleById = (article_id) => {
     const commentData = {
       author: username, 
       body: body
-    };
-    return db
-      .query(`INSERT INTO comments (article_id, author, body) 
-      VALUES ($1, $2, $3) 
-      RETURNING *;`,
-        [article_id, commentData.author, commentData.body]
-      )
-      .then((result) => {
-        console.log(result.rows[0])
-        return result.rows[0];
-      });
+    }
+    if (!article_id || !username || !body) {
+      return Promise.reject({ status: 400, msg: "Bad Request" });
+    } 
+    
+      return db
+        .query(`INSERT INTO comments (article_id, author, body) 
+        VALUES ($1, $2, $3) 
+        RETURNING *;`,
+          [article_id, commentData.author, commentData.body]
+        )
+        .then((result) => {
+          console.log(result)
+          return result.rows[0];
+        });
+    
   };

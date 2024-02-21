@@ -155,20 +155,72 @@ describe('GET /api/articles/:article_id/comments', () => {
         })
     })
 })
-// describe('POST /api/articles/:article_id/comments', () => {
-//     test('POST:201 inserts a new comment to the db and sends the new article back to the client', () => {
-//         const newComment = {
-//             "username": "SparkleFusion37",
-//             "body": "This article really opened my eyes to a new perspective!",
-//     }  
-//         return request(app)
-//           .post('/api/articles/1/comments')
-//           .send(newComment)
-//           .expect(201)
-//           .then((response) => {
-//             console.log(response.body)
-//             expect(response.body.comments.username).toBe("SparkleFusion37");
-//             expect(response.body.comments.body).toBe("This article really opened my eyes to a new perspective!");
-//         })
-//     })
-// })
+describe('POST /api/articles/:article_id/comments', () => {
+    test('POST:201 inserts a new comment to the db and sends the new article back to the client', () => {
+        const newComment = {
+            "username": 'butter_bridge',
+            "body": "This article really opened my eyes to a new perspective!",
+    }  
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send(newComment)
+          .expect(201)
+          .then((response) => {
+            expect(response.body.comment.author).toBe('butter_bridge');
+            expect(response.body.comment.body).toBe("This article really opened my eyes to a new perspective!");
+        })
+    })
+    test('POST:404 returns a error if article_id is not exist', () => {
+        const newComment = {
+            "username": 'butter_bridge',
+            "body": "This article really opened my eyes to a new perspective!",
+    }  
+        return request(app)
+          .post('/api/articles/999/comments')
+          .send(newComment)
+          .expect(404)
+          .then((response) => {
+            expect(response.body.msg).toBe('Not Found')
+        })
+    })
+    test('POST:400 returns a error if article_id is not exist', () => {
+        const newComment = {
+            "username": 'butter_bridge',
+            "body": "This article really opened my eyes to a new perspective!"
+    }  
+        return request(app)
+          .post('/api/articles/non-existing-id/comments')
+          .send(newComment)
+          .expect(400)
+          .then((response) => {
+            expect(response.body.msg).toBe("Bad Request")
+        })
+    })
+    test('POST:400 returns a error if article_id is not exist', () => {
+        const newComment = {
+            "username": 'butter_bridge'
+    }  
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send(newComment)
+          .expect(400)
+          .then((response) => {
+            expect(response.body.msg).toBe("Bad Request")
+        })
+    })
+    test('POST:404 returns a error if article_id is not exist', () => {
+        const newComment = {
+            "username": 'happy_cat',
+            "body": "This article really opened my eyes to a new perspective!"
+    }  
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send(newComment)
+          .expect(404)
+          .then((response) => {
+            expect(response.body.msg).toBe('Not Found')
+        })
+    })
+})
+
+

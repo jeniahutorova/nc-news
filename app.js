@@ -13,21 +13,28 @@ app.get("/api/articles/:article_id/comments", getComments)
 app.post('/api/articles/:article_id/comments', postComment);
 
 app.use((err, request, response, next)=> {
+  console.log(err)
     if (err.status && err.msg) {
       response.status(err.status).send({ msg: err.msg })
     }
     next(err)
   })
 app.use((err, request, response, next) => {
-  if(err.status = '22P02'){
+  if(err.code === '22P02'){
     response.status(400).send({msg :'Bad Request'})
-  } 
+  }
+  next(err)
+})
+
+app.use((err, request, response, next) => {
+  if(err.code === '23503'){
+    response.status(404).send({msg : "Not Found"})
+  }
   next(err)
 })
 app.use((err, request, response, next) => {
   response.status(500).send({msg :'Internal Server Error'})
 })
-
 app.all('/*', (request, response, next) => {
     response.status(404).send({msg: "Endpoint not found"})
     next(err)
