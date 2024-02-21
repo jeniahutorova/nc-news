@@ -14,9 +14,9 @@ describe('GET /api/topics', () => {
         .get('/api/topics')
         .expect(200)
         .then((response)=> {
-            const {topics} = response.body
-            expect(topics.topics.length).toBe(3)
-            topics.topics.forEach((topic) => { 
+            const {topics} = response.body.topics
+            expect(topics.length).toBe(3)
+            topics.forEach((topic) => { 
             expect(topic).toHaveProperty('slug')
             expect(topic).toHaveProperty('description')
            })
@@ -87,6 +87,7 @@ describe(`GET /api`, () => {
             .expect(200)
             .then((response) => {
                 const {articles} = response.body.articles;
+                expect(articles.length).toBe(13)
                     articles.forEach((article) => {
                     expect(article).toHaveProperty('comment_count')
             })   
@@ -127,7 +128,6 @@ describe('GET /api/articles/:article_id/comments', () => {
         .then((response) => {
             const comments = response.body;
             comments.forEach((comment) => {
-                console.log(comment)
                 expect(comment).toHaveProperty('comment_id')
                 expect(comment).toHaveProperty('votes')
                 expect(comment).toHaveProperty('created_at')
@@ -138,4 +138,37 @@ describe('GET /api/articles/:article_id/comments', () => {
             expect(comments[0].comment_id).toBe(5)
         })
     })
+    it('should return 404 if passed valid but non-existing id', () => {
+        return request(app)
+        .get('/api/articles/999/comments')
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe('Not Found')
+        })
+    })
+    it('should return 400 if passed invalid id', () => {
+        return request(app)
+        .get('/api/articles/article/comments')
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe("Bad Request")
+        })
+    })
 })
+// describe('POST /api/articles/:article_id/comments', () => {
+//     test('POST:201 inserts a new comment to the db and sends the new article back to the client', () => {
+//         const newComment = {
+//             "username": "SparkleFusion37",
+//             "body": "This article really opened my eyes to a new perspective!",
+//     }  
+//         return request(app)
+//           .post('/api/articles/1/comments')
+//           .send(newComment)
+//           .expect(201)
+//           .then((response) => {
+//             console.log(response.body)
+//             expect(response.body.comments.username).toBe("SparkleFusion37");
+//             expect(response.body.comments.body).toBe("This article really opened my eyes to a new perspective!");
+//         })
+//     })
+// })

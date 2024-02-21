@@ -1,4 +1,4 @@
-const e = require('express');
+const express = require('express');
 const db = require('./db/connection')
 const fs = require('fs')
 
@@ -51,6 +51,7 @@ exports.selectArticleById = (article_id) => {
   }
   
   exports.selectComments = (article_id) => {
+    const queryValues = [];
     
     const  sqlString = `SELECT 
     comments.comment_id,
@@ -59,14 +60,39 @@ exports.selectArticleById = (article_id) => {
     comments.author,
     comments.body,
     comments.article_id
-    FROM articles
-    LEFT JOIN comments 
-    ON articles.article_id = comments.article_id
+    FROM comments
+    LEFT JOIN articles
+    ON comments.article_id = articles.article_id
     WHERE articles.article_id = $1
     ORDER BY comments.created_at DESC`
-
-    return db.query(sqlString, [article_id])
+    
+    if (!article_id) {
+      return Promise.reject({ status: 400, msg: "Bad Request" });
+  }
+    queryValues.push(article_id)
+  
+    return db.query(sqlString, queryValues)
     .then((article) => {
+      if(article.rows.length === 0){
+        return Promise.reject({status: 404, msg:'Not Found'});
+      }
     return article.rows
     })
   }
+
+  exports.insertComment = ({ article_id, username, body }) => {
+    const commentData = {
+      author: username, 
+      body: body
+    };
+    return db
+      .query(`INSERT INTO comments (article_id, author, body) 
+      VALUES ($1, $2, $3) 
+      RETURNING *;`,
+        [article_id, commentData.author, commentData.body]
+      )
+      .then((result) => {
+        console.log(result.rows[0])
+        return result.rows[0];
+      });
+  };
