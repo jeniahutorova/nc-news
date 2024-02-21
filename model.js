@@ -117,11 +117,17 @@ exports.selectArticleById = (article_id) => {
   }
 
   exports.selectCommentById = ({comment_id}) => {
-    return db.query('SELECT * FROM comments WHERE comment_id = $1', [comment_id])
+    return db.query('SELECT * FROM comments WHERE comment_id = $1;', [comment_id])
     .then((result) => {
         if (result.rows.length === 0) {
             return Promise.reject({ status: 404, msg: 'Not Found' });
         }
       return db.query('DELETE FROM comments WHERE comment_id = $1;', [comment_id]);
+    })
+  }
+  exports.selectUsers = () => {
+    return db.query(`SELECT * FROM users;`)
+    .then((users) => {
+      return users.rows
     })
   }

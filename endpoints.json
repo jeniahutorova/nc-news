@@ -91,5 +91,14 @@
   "DELETE /api/comments/:comment_id": {
     "description": "Deletes the given comment by comment_id",
     "exampleResponse": "No content is returned"
-  }
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "exampleResponse": [
+      {
+        "username": "tickle122",
+        "name": "Tom Tickle",
+        "avatar_url": "https://www.somesite.com/avatar/1.jpg"
+      }
+    ]}
 }
