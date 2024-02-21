@@ -1,4 +1,4 @@
-const {selectTopics, selectArticleById, selectArticles, selectEndpoints, selectComments} = require("./model")
+const {selectTopics, selectArticleById, selectArticles, selectEndpoints, selectComments, insertComment} = require("./model")
 
 exports.getTopics = (req,res,next) => {
     selectTopics().then((topics) => {
@@ -42,3 +42,16 @@ exports.getArticleById = (req, res, next) => {
       next(err)
     })
   }
+
+  exports.postComment = (req, res, next) => {
+    const { article_id } = req.params;
+    const {username, body}= req.body;
+    console.log('article_id:', article_id); // Log the value of article_id
+    console.log('username:', username); // Log the value of username
+    console.log('body:', body); 
+    insertComment({article_id, username , body}).then((comment) => {
+      res.status(201).send({ comment });
+    }).catch((err) => {
+      next(err)
+     })
+  };
