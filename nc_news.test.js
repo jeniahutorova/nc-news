@@ -170,7 +170,7 @@ describe('POST /api/articles/:article_id/comments', () => {
             expect(response.body.comment.body).toBe("This article really opened my eyes to a new perspective!");
         })
     })
-    test('POST:404 returns a error if article_id is not exist', () => {
+    test('POST:404 returns a error if article_id is valid but non-existing ', () => {
         const newComment = {
             "username": 'butter_bridge',
             "body": "This article really opened my eyes to a new perspective!",
@@ -183,7 +183,7 @@ describe('POST /api/articles/:article_id/comments', () => {
             expect(response.body.msg).toBe('Not Found')
         })
     })
-    test('POST:400 returns a error if article_id is not exist', () => {
+    test('POST:400 returns a error if article_id is invalid', () => {
         const newComment = {
             "username": 'butter_bridge',
             "body": "This article really opened my eyes to a new perspective!"
@@ -196,7 +196,7 @@ describe('POST /api/articles/:article_id/comments', () => {
             expect(response.body.msg).toBe("Bad Request")
         })
     })
-    test('POST:400 returns a error if article_id is not exist', () => {
+    test('POST:400 returns a error if keys are missing', () => {
         const newComment = {
             "username": 'butter_bridge'
     }  
@@ -208,7 +208,7 @@ describe('POST /api/articles/:article_id/comments', () => {
             expect(response.body.msg).toBe("Bad Request")
         })
     })
-    test('POST:404 returns a error if article_id is not exist', () => {
+    test('POST:404 returns a error if username is not valid', () => {
         const newComment = {
             "username": 'happy_cat',
             "body": "This article really opened my eyes to a new perspective!"
@@ -222,5 +222,56 @@ describe('POST /api/articles/:article_id/comments', () => {
         })
     })
 })
-
+describe('PATCH /api/articles/:article_id', () => {
+    test('PATCH:200 updates the votes of the specified article', () => {
+        return request(app)
+        .patch('/api/articles/1')
+        .send({ inc_votes: 10 })
+        .expect(200)
+        .then((response) => {
+            const article = response.body
+            expect(article.votes).toBe(110)
+        })
+    })
+    test('PATCH:200 updates the votes of the specified article', () => {
+        return request(app)
+        .patch('/api/articles/1')
+        .send({ inc_votes: -100 })
+        .expect(200)
+        .then((response) => {
+            const article = response.body
+            expect(article.votes).toBe(10)
+        })
+    })
+    test('PATCH:404 returns a error if article_id is valid but non-existing', () => {
+        return request(app)
+        .patch('/api/articles/999')
+        .send({ inc_votes: -100 })
+        .expect(404)
+        .then((response) => {
+            const article = response.body
+            expect(article.msg).toBe("Not Found")
+        })
+    })
+    test('PATCH:400 returns a error if article_id is invalid', () => {
+        return request(app)
+        .patch('/api/articles/article')
+        .send({ inc_votes: -100 })
+        .expect(400)
+        .then((response) => {
+            const article = response.body
+            expect(article.msg).toBe("Bad Request")
+        })
+    })
+    test('PATCH:400 returns a error if votes are empty or missing a value', () => {
+        return request(app)
+        .patch('/api/articles/1')
+        .send({})
+        .expect(400)
+        .then((response) => {
+            const article = response.body
+            expect(article.msg).toBe("Bad Request")
+        })
+    })
+});
 
