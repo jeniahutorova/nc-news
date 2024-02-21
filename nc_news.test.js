@@ -297,4 +297,28 @@ describe('DELETE /api/comments/:comment_id', () => {
         })
     })
 })
+describe('GET /api/users', () => {
+    test('should return  an array of objects, each object should have the following properties', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then((response) => {
+            const users = response.body
+            expect(users.length).toBe(4)
+            users.forEach((user) => {
+                expect(user).toHaveProperty('username'),
+                expect(user).toHaveProperty('name'),
+                expect(user).toHaveProperty('avatar_url')
+            })
+        })
+    })
+    test('404 should return an error when passed an invalid endpoint', () => {
+        return request(app)
+        .get('/api/not-users')
+        .expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe("Endpoint not found")
+        })
+    })
+});
 
