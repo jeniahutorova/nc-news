@@ -16,6 +16,7 @@ app.patch('/api/articles/:article_id', patchArticles)
 app.delete('/api/comments/:comment_id', deleteCommentById)
 app.get('/api/users', getUsers)
 
+
 app.use((err, request, response, next)=> {
     if (err.status && err.msg) {
       response.status(err.status).send({ msg: err.msg })
