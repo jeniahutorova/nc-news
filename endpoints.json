@@ -100,5 +100,22 @@
         "name": "Tom Tickle",
         "avatar_url": "https://www.somesite.com/avatar/1.jpg"
       }
-    ]}
+    ]
+  },
+  "GET /api/articles/?topic={topic}": {
+    "description": "serves an array of articles filtered by topic",
+    "queries": [],
+    "exampleResponse": {
+      "articles": [
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 0,
+          "comment_count": 6
+        }
+      ]
+    }
+  }
 }
