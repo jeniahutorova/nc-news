@@ -75,7 +75,7 @@ describe(`GET /api`, () => {
             .get('/api/articles')
             .expect(200)
             .then((response) => {
-                const {articles}= response.body.articles;
+                const {articles}= response.body;
                 articles.forEach((article) => {
                     expect(article).toHaveProperty('comment_count')
                 })
@@ -86,7 +86,7 @@ describe(`GET /api`, () => {
             .get('/api/articles')
             .expect(200)
             .then((response) => {
-                const {articles} = response.body.articles;
+                const {articles} = response.body;
                 expect(articles.length).toBe(13)
                     articles.forEach((article) => {
                     expect(article).toHaveProperty('comment_count')
@@ -98,7 +98,7 @@ describe(`GET /api`, () => {
         .get('/api/articles?sort_by=created_at&order=desc')
         .expect(200)
         .then((response) => {
-            const {articles} = response.body.articles;
+            const {articles} = response.body;
             expect(articles).toBeSorted('created_at')
         });
     })
@@ -116,10 +116,30 @@ describe(`GET /api`, () => {
         .get("/api/articles")
         .expect(200)
         .then((response) => {
-            const {articles} = response.body.articles;
+            const {articles} = response.body;
             expect(articles).toBeSortedBy("created_at",{descending: true})
         })
     })
+describe('GET /api/articles by topic', () => {
+    test('should respond with articles by topic and if query is ommited should respond with all articles', () => {
+            return request(app)
+            .get('/api/articles/?topic=cats')
+            .expect(200)
+            .then((response) => {
+                const{ articles } = response.body
+                expect(articles.length).toBe(1)
+            })
+        });
+        test('404: should respond with error if passed invalid id', () => {
+            return request(app)
+            .get('/api/articles/?topic=not-a-topic')
+            .expect(404)
+            .then((response) => {
+                const {msg} = response.body
+                expect(msg).toBe("Not Found")
+            })
+        });
+    });
 describe('GET /api/articles/:article_id/comments', () => {
     it('an article object, which should have the following properties', () => {
         return request(app)
@@ -229,7 +249,7 @@ describe('PATCH /api/articles/:article_id', () => {
         .send({ inc_votes: 10 })
         .expect(200)
         .then((response) => {
-            const article = response.body
+            const {article} = response.body
             expect(article.votes).toBe(110)
         })
     })
@@ -239,7 +259,7 @@ describe('PATCH /api/articles/:article_id', () => {
         .send({ inc_votes: -100 })
         .expect(200)
         .then((response) => {
-            const article = response.body
+            const {article} = response.body
             expect(article.votes).toBe(10)
         })
     })
@@ -303,7 +323,7 @@ describe('GET /api/users', () => {
         .get('/api/users')
         .expect(200)
         .then((response) => {
-            const users = response.body
+            const {users} = response.body
             expect(users.length).toBe(4)
             users.forEach((user) => {
                 expect(user).toHaveProperty('username'),
@@ -320,5 +340,5 @@ describe('GET /api/users', () => {
             expect(response.body.msg).toBe("Endpoint not found")
         })
     })
-});
+})
 

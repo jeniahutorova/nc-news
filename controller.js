@@ -1,4 +1,4 @@
-const {selectTopics, selectArticleById, selectArticles, selectEndpoints, selectComments, insertComment, insertArticle, selectCommentById, selectUsers} = require("./model")
+const {selectTopics, selectArticleById, selectArticles, selectEndpoints, selectComments, insertComment, insertArticle, selectCommentById, selectUsers, selectSortTopics} = require("./model")
 
 exports.getTopics = (req,res,next) => {
     selectTopics().then((topics) => {
@@ -26,8 +26,8 @@ exports.getArticleById = (req, res, next) => {
   }
 
   exports.getArticles = (req,res,next) => {
-    const {sort_by, order} = req.query
-    selectArticles(sort_by, order).then((articles) => {
+    const {topic , sort_by, order} = req.query
+    selectArticles(topic, sort_by, order).then((articles) => {
         res.status(200).send({articles})
     }).catch((err) => {
         next(err)
@@ -58,7 +58,7 @@ exports.getArticleById = (req, res, next) => {
     const {article_id} = req.params;
     const {inc_votes} = req.body;
     insertArticle({ article_id, inc_votes}).then((article) => {
-      res.status(200).send(article)
+      res.status(200).send({article})
     }).catch((err) => {
       next(err)
     })
@@ -75,7 +75,7 @@ exports.getArticleById = (req, res, next) => {
 
   exports.getUsers = (req, res, next) => {
     selectUsers().then((users) => {
-      res.status(200).send(users)
+      res.status(200).send({users})
     }).catch((err) => {
       next(err)
     })
