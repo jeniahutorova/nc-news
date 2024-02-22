@@ -121,7 +121,7 @@ describe(`GET /api`, () => {
         })
     })
 describe('GET /api/articles by topic', () => {
-    test('should respond with articles by topic and if query is ommited should respond with all articles', () => {
+    it('should respond with articles by topic and if query is ommited should respond with all articles', () => {
             return request(app)
             .get('/api/articles/?topic=cats')
             .expect(200)
@@ -130,7 +130,7 @@ describe('GET /api/articles by topic', () => {
                 expect(articles.length).toBe(1)
             })
         });
-        test('404: should respond with error if passed invalid id', () => {
+        it('404: should respond with error if passed invalid id', () => {
             return request(app)
             .get('/api/articles/?topic=not-a-topic')
             .expect(404)
@@ -138,7 +138,16 @@ describe('GET /api/articles by topic', () => {
                 const {msg} = response.body
                 expect(msg).toBe("Not Found")
             })
-        });
+        })
+        it('should return an empty array  when a valid topic has no articles', () => {
+            return request(app)
+            .get('/api/articles/?topic=paper')
+            .expect(200)
+            .then((response) => {
+                const article = response.body.articles
+                expect(article).toEqual([])
+            })
+        })
     });
 describe('GET /api/articles/:article_id/comments', () => {
     it('an article object, which should have the following properties', () => {
@@ -174,6 +183,17 @@ describe('GET /api/articles/:article_id/comments', () => {
             expect(response.body.msg).toBe("Bad Request")
         })
     })
+    it('should respond with comment_count property', () => {
+        return request(app)
+        .get('/api/articles/1/comments')
+        .expect(200)
+        .then((response) => {
+            const comments = response.body;
+            comments.forEach((comment) => {
+                expect(comment.comment_count).toBe('11')
+            })
+        })
+    });
 })
 describe('POST /api/articles/:article_id/comments', () => {
     test('POST:201 inserts a new comment to the db and sends the new article back to the client', () => {

@@ -59,26 +59,26 @@ exports.selectArticleById = (article_id) => {
     sqlString += `;`
 
   return db.query(sqlString).then((articles) => {
-    console.log(sqlString)
     return articles.rows;
-  });
+  })
   }
   
   exports.selectComments = (article_id) => {
     const queryValues = [];
     
-    const  sqlString = `SELECT 
+    const sqlString = `
+  SELECT 
     comments.comment_id,
     comments.votes,
     comments.created_at,
     comments.author,
     comments.body,
-    comments.article_id
-    FROM comments
-    LEFT JOIN articles
-    ON comments.article_id = articles.article_id
-    WHERE articles.article_id = $1
-    ORDER BY comments.created_at DESC`
+    comments.article_id,
+    (SELECT COUNT(*) FROM comments WHERE comments.article_id = articles.article_id) AS comment_count
+  FROM comments
+  JOIN articles ON comments.article_id = articles.article_id
+  WHERE articles.article_id = $1
+  ORDER BY comments.created_at DESC`
     
     if (!article_id) {
       return Promise.reject({ status: 400, msg: "Bad Request" });
