@@ -18,7 +18,13 @@ exports.selectEndpoints = () => {
   }
 }
 exports.selectArticleById = (article_id) => {
-    return db.query('SELECT * FROM articles WHERE article_id = $1;', [article_id])
+    return db.query(`SELECT 
+      articles.*,
+      COUNT(comments.comment_id) AS comment_count
+      FROM articles
+      LEFT JOIN comments ON articles.article_id = comments.article_id
+      WHERE articles.article_id = $1
+      GROUP BY articles.article_id;`, [article_id])
       .then(({rows}) => {
         const article = rows[0];
         if (!article) {
@@ -73,8 +79,7 @@ exports.selectArticleById = (article_id) => {
     comments.created_at,
     comments.author,
     comments.body,
-    comments.article_id,
-    (SELECT COUNT(*) FROM comments WHERE comments.article_id = articles.article_id) AS comment_count
+    comments.article_id
   FROM comments
   JOIN articles ON comments.article_id = articles.article_id
   WHERE articles.article_id = $1

@@ -68,7 +68,16 @@ describe(`GET /api`, () => {
               .then((response) => {
                 expect(response.body.msg).toBe('Bad Request');
               });
-          });
+          })
+          it('should respond with comment_count property', () => {
+            return request(app)
+            .get('/api/articles/1')
+            .expect(200)
+            .then((response) => {
+                const {article} = response.body;
+                    expect(article.comment_count).toBe('11')
+            })
+        });
     })
         it('should get an articles array of article objects, each of which should have the following properties', () => {
             return request(app)
@@ -183,17 +192,6 @@ describe('GET /api/articles/:article_id/comments', () => {
             expect(response.body.msg).toBe("Bad Request")
         })
     })
-    it('should respond with comment_count property', () => {
-        return request(app)
-        .get('/api/articles/1/comments')
-        .expect(200)
-        .then((response) => {
-            const comments = response.body;
-            comments.forEach((comment) => {
-                expect(comment.comment_count).toBe('11')
-            })
-        })
-    });
 })
 describe('POST /api/articles/:article_id/comments', () => {
     test('POST:201 inserts a new comment to the db and sends the new article back to the client', () => {
