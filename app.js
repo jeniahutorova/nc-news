@@ -41,7 +41,6 @@ app.use((err, request, response, next) => {
 })
 app.all('/*', (request, response, next) => {
     response.status(404).send({msg: "Endpoint not found"})
-    next(err)
   })
 
 module.exports = app
