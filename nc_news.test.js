@@ -370,5 +370,57 @@ describe('GET /api/users/:username', () => {
         })
     })
 })
+describe('GET /api/comments/comment_id', () => {
+    test('updates positive votes', () => {
+        return request(app)
+        .patch('/api/comments/2')
+        .send({ inc_votes: 10 })
+        .expect(200)
+        .then((response) => {
+            const {comment} = response.body
+            expect(comment.votes).toBe(24)
+        })
+    })
+    test('updates negative votes', () => {
+        return request(app)
+        .patch('/api/comments/2')
+        .send({ inc_votes: -10 })
+        .expect(200)
+        .then((response) => {
+            const {comment} = response.body
+            expect(comment.votes).toBe(14)
+        })
+    })
+    test('PATCH:404 returns a error if comment_id is valid but non-existing', () => {
+        return request(app)
+        .patch('/api/comments/1')
+        .send({ inc_votes: 5})
+        .expect(404)
+        .then((response) => {
+            const comment = response.body
+            expect(comment.msg).toBe("Not Found")
+        })
+    })
+    test('PATCH:400 returns a error if comment_id is invalid', () => {
+        return request(app)
+        .patch('/api/comments/comment')
+        .send({ inc_votes: -100 })
+        .expect(400)
+        .then((response) => {
+            const comment = response.body
+            expect(comment.msg).toBe("Bad Request")
+        })
+    })
+    test('PATCH:400 returns a error if votes are empty or missing a value', () => {
+        return request(app)
+        .patch('/api/comments/2')
+        .send({})
+        .expect(400)
+        .then((response) => {
+            const comment = response.body
+            expect(comment.msg).toBe("Bad Request")
+        })
+    })
+})
 
 
