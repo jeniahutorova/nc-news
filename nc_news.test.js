@@ -348,4 +348,27 @@ describe('GET /api/users', () => {
         })
     })
 })
+describe('GET /api/users/:username', () => {
+    test('should return a user object', () => {
+        return request(app)
+        .get('/api/users/lurker')
+        .expect(200)
+        .then((response) => {
+            const {user} = response.body
+            expect(user).toHaveProperty('username')
+            expect(user).toHaveProperty('name')
+            expect(user).toHaveProperty('avatar_url')
+        })
+    })
+    test('404: should respond with error when given valid but not_existing name', () => {
+        return request(app)
+        .get('/api/users/not-a-username')
+        .expect(404)
+        .then((response) => {
+            const {msg} = response.body
+            expect(msg).toBe("Not Found")
+        })
+    })
+})
+
 

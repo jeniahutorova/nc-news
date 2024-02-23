@@ -3,10 +3,10 @@ const { getEndpoints } = require("./controller")
 
 const app = express();
 
-const articleRouter = require('./articleRouter');
-const commentRouter = require('./commentRouter');
-const usersRouter = require('./usersRouter');
-const topicsRouter = require('./topicsRouter');
+const articleRouter = require('./routers/articleRouter');
+const commentRouter = require('./routers/commentRouter');
+const usersRouter = require('./routers/usersRouter');
+const topicsRouter = require('./routers/topicsRouter');
 
 
 app.use(express.json());
@@ -15,7 +15,6 @@ app.use('/api/articles', articleRouter);
 app.use('/api/topics', topicsRouter)
 app.use("/api/comments", commentRouter);
 app.use('/api/users', usersRouter)
-
 app.get("/api", getEndpoints);
 
 app.use((err, request, response, next)=> {

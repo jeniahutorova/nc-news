@@ -1,4 +1,5 @@
 
+const { userInfo } = require('os');
 const db = require('./db/connection')
 const fs = require('fs')
 
@@ -149,4 +150,16 @@ exports.selectArticleById = (article_id) => {
     .then((users) => {
       return users.rows
     })
+  }
+  exports.selectUsersByName = ({name}) => {
+    if(!name){
+      return Promise.reject({ status: 400, msg: "Bad Request" })
+    }
+    return db.query(`SELECT * FROM users WHERE username = $1`, [name])
+    .then((user) => {
+      if(user.rows.length === 0){
+        return Promise.reject({ status: 404, msg : "Not Found"})
+      }
+      return user.rows[0]
+    } )
   }
