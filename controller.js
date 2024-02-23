@@ -1,4 +1,4 @@
-const {selectTopics, selectArticleById, selectArticles, selectEndpoints, selectComments, insertComment, insertArticle, selectCommentById, selectUsers, selectUsersByName} = require("./model")
+const {selectTopics, selectArticleById, selectArticles, selectEndpoints, selectComments, insertComment, insertArticle, selectCommentById, selectUsers, selectUsersByName, insertCommentById} = require("./model")
 
 exports.getTopics = (req,res,next) => {
     selectTopics().then((topics) => {
@@ -84,6 +84,16 @@ exports.getArticleById = (req, res, next) => {
     const name = req.params.username
     selectUsersByName({name}).then((user) => {
       res.status(200).send({user})
+    }).catch((err) => {
+      next(err)
+    })
+  }
+  
+  exports.patchComment = (req, res, next) => {
+    const {comment_id} = req.params;
+    const {inc_votes} = req.body;
+    insertCommentById({comment_id, inc_votes}).then((comment) => {
+      res.status(200).send({comment})
     }).catch((err) => {
       next(err)
     })
