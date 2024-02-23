@@ -2,13 +2,26 @@
 
 ### Hosted Version
 
-The hosted version of this project can be accessed at https://nc-news-o4n5.onrender.com
+The hosted version of this project can be accessed at https://nc-news-o4n5.onrender.com/api
 
 
 ### Summary
 
 This project is a backend API for the NC News platform. It provides endpoints for managing articles, comments, users, and topics.
 
+### This project requires two .env files:
+ 
+1.Create a **.env.development** file with the following variables:
+
+PGDATABASE=nc_news
+
+2.Create a **.env.test** file with the following variables:
+
+PGDATABASE=nc_news_test
+
+### Requirements
+Node.js (minimum version v20.10.0)
+PostgreSQL (minimum version 16.1)
 
 ### Getting Started
 
@@ -39,19 +52,3 @@ npm run seed
 ### Run tests:
 
 npm test
-
-### Environment Variables
-
-### This project requires two .env files:
- 
-1.Create a **.env.development** file with the following variables:
-
-PGDATABASE=nc_news
-
-2.Create a **.env.test** file with the following variables:
-PGDATABASE=nc_news_test
-
-### Requirements
-Node.js (minimum version v20.10.0)
-PostgreSQL (minimum version 16.1)
-
