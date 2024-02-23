@@ -365,7 +365,6 @@ describe('GET /api/users/:username', () => {
         .get('/api/users/not-a-username')
         .expect(404)
         .then((response) => {
-            console.log(response.body)
             const {msg} = response.body
             expect(msg).toBe("Not Found")
         })
