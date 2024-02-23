@@ -79,18 +79,7 @@ describe(`GET /api`, () => {
             })
         });
     })
-        it('should get an articles array of article objects, each of which should have the following properties', () => {
-            return request(app)
-            .get('/api/articles')
-            .expect(200)
-            .then((response) => {
-                const {articles}= response.body;
-                articles.forEach((article) => {
-                    expect(article).toHaveProperty('comment_count')
-                })
-            })
-        });
-        it('the articles should be sorted by date in descending order.', () => {
+        it('the articles should have property comment_count and return all articles', () => {
             return request(app)
             .get('/api/articles')
             .expect(200)
@@ -102,7 +91,7 @@ describe(`GET /api`, () => {
             })   
         });
     })
-    it('the articles should be sorted by date in descending order.', () => {
+    it('the articles should be sorted by date in descending order', () => {
         return request(app)
         .get('/api/articles?sort_by=created_at&order=desc')
         .expect(200)
@@ -120,7 +109,7 @@ describe(`GET /api`, () => {
             expect(msg).toBe('Bad Request')
         })
     })
-    it('should sort in a desc order by default', () => {
+    it('sorts articles in descending order by default and defaults to sorting by the created_at date', () => {
         return request(app)
         .get("/api/articles")
         .expect(200)
