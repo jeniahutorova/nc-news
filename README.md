@@ -47,6 +47,7 @@ npm test
 1.Create a **.env.development** file with the following variables:
 
 PGDATABASE=nc_news
+
 2.Create a **.env.test** file with the following variables:
 PGDATABASE=nc_news_test
 
