@@ -121,7 +121,7 @@ describe(`GET /api`, () => {
 describe('GET /api/articles by topic', () => {
     it('should respond with articles by topic and if query is ommited should respond with all articles', () => {
             return request(app)
-            .get('/api/articles/?topic=cats')
+            .get('/api/articles?topic=cats')
             .expect(200)
             .then((response) => {
                 const{ articles } = response.body
@@ -130,7 +130,7 @@ describe('GET /api/articles by topic', () => {
         });
         it('404: should respond with error if passed invalid id', () => {
             return request(app)
-            .get('/api/articles/?topic=not-a-topic')
+            .get('/api/articles?topic=not-a-topic')
             .expect(404)
             .then((response) => {
                 const {msg} = response.body
@@ -139,7 +139,7 @@ describe('GET /api/articles by topic', () => {
         })
         it('should return an empty array  when a valid topic has no articles', () => {
             return request(app)
-            .get('/api/articles/?topic=paper')
+            .get('/api/articles?topic=paper')
             .expect(200)
             .then((response) => {
                 const article = response.body.articles
