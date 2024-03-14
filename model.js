@@ -35,6 +35,7 @@ exports.selectArticleById = (article_id) => {
       });
   };
   exports.selectArticles = (topic, sort_by = "created_at", order = "desc") => {
+    
     let sqlString = `SELECT 
     articles.author,
     articles.title,
@@ -48,26 +49,28 @@ exports.selectArticleById = (article_id) => {
     LEFT JOIN comments 
     ON articles.article_id = comments.article_id`
     
-    const validTopic = ['mitch', 'cats', 'paper']
-
-    if (topic && validTopic.includes(topic)) {
-      sqlString += ` WHERE topic = '${topic}'`
-    } else if (topic && !validTopic.includes(topic)) {
-      return Promise.reject({ status: 404, msg: "Not Found" });
-    }
-    sqlString += ` GROUP BY articles.article_id`
-    
-    const validSortBy = ["created_at", "votes", "comment_count"]
-    
-    if(!validSortBy.includes(sort_by)){
-      return Promise.reject({ status: 400, msg: "Bad Request" });
-    }
-    sqlString += ` ORDER BY ${sort_by} ${order}`
-    sqlString += `;`
-
-  return db.query(sqlString).then((articles) => {
-    return articles.rows;
-  })
+    const validTopic = []
+    return db.query(`SELECT slug FROM topics`).then(({rows})=> {
+      rows.forEach((row)=> validTopic.push(row.slug))
+      if (topic && validTopic.includes(topic)) {
+        sqlString += ` WHERE topic = '${topic}'`
+      } else if (topic && !validTopic.includes(topic)) {
+        return Promise.reject({ status: 404, msg: "Not Found" });
+      }
+      sqlString += ` GROUP BY articles.article_id`
+      
+      const validSortBy = ["created_at", "votes", "comment_count"]
+      
+      if(!validSortBy.includes(sort_by)){
+        return Promise.reject({ status: 400, msg: "Bad Request" });
+      }
+      sqlString += ` ORDER BY ${sort_by} ${order}`
+      sqlString += `;`
+  
+    return db.query(sqlString)
+    }).then((articles)=> {
+      return articles.rows
+    })
   }
   
   exports.selectComments = (article_id) => {
